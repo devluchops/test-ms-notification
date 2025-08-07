@@ -20,7 +20,7 @@ jobs:
       
       - name: Notify Success
         if: success()
-        uses: DevLuchOps/ms-teams-notification-action@v1
+        uses: DevLuchOps/ms-teams-notification-action@v1.0.3
         with:
           webhook_url: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
           title: 'Deployment Successful'
@@ -31,7 +31,7 @@ jobs:
       
       - name: Notify Failure
         if: failure()
-        uses: DevLuchOps/ms-teams-notification-action@v1
+        uses: DevLuchOps/ms-teams-notification-action@v1.0.3
         with:
           webhook_url: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
           title: 'Deployment Failed'
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Notify PR
-        uses: DevLuchOps/ms-teams-notification-action@v1
+        uses: DevLuchOps/ms-teams-notification-action@v1.0.3
         with:
           webhook_url: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
           title: 'New Pull Request'
