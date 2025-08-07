@@ -1,0 +1,53 @@
+name: Deploy and Notify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy
+        id: deploy
+        run: |
+          # Your deployment commands here
+          echo "Deploying..."
+      
+      - name: Notify Success
+        if: success()
+        uses: DevLuchOps/ms-teams-notification-action@v1
+        with:
+          webhook_url: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
+          title: 'Deployment Successful'
+          message: 'Successfully deployed to production'
+          url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          # creator and repo_name are automatically set from GitHub context
+          status: 'success'
+      
+      - name: Notify Failure
+        if: failure()
+        uses: DevLuchOps/ms-teams-notification-action@v1
+        with:
+          webhook_url: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
+          title: 'Deployment Failed'
+          message: 'Deployment to production failed'
+          url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          status: 'failure'
+
+  notify-pr:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify PR
+        uses: DevLuchOps/ms-teams-notification-action@v1
+        with:
+          webhook_url: ${{ secrets.MS_TEAMS_WEBHOOK_URL }}
+          title: 'New Pull Request'
+          message: '${{ github.event.pull_request.title }}'
+          url: ${{ github.event.pull_request.html_url }}
+          status: 'in_progress'
